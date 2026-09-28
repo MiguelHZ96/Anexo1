@@ -1,0 +1,24 @@
+pipeline {
+  agent any
+  stages {
+    stage('Clonar') {
+      steps { git branch: 'main', url: 'https://github.com/MiguelHZ96/Anexo1.git' }
+    }
+    stage('Compilar') {
+      steps { sh 'docker build -t sitio-unidad1:${BUILD_NUMBER} .' }
+    }
+    stage('Prueba') {
+      steps {
+        sh 'docker run -d --name test-sitio -p 8082:80 sitio-unidad1:${BUILD_NUMBER}'
+        sh 'sleep 3 && curl -f http://localhost:8082'
+      }
+      post { always { sh 'docker rm -f test-sitio || true' } }
+    }
+    stage('Desplegar') {
+      steps {
+        sh 'docker rm -f sitio-unidad1 || true'
+        sh 'docker run -d --name sitio-unidad1 -p 8081:80 sitio-unidad1:${BUILD_NUMBER}'
+      }
+    }
+  }
+}
