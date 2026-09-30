@@ -20,7 +20,7 @@ pipeline {
         sh 'docker run -d --name sitio-unidad1 -p 8081:80 sitio-unidad1:${BUILD_NUMBER}'
       }
     stage('Escanear') {
-    steps {
+      steps {
         sh 'trivy image --exit-code 1 --severity CRITICAL --quiet sitio-unidad1:${BUILD_NUMBER}'
     }
 }
