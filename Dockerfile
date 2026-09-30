@@ -1,5 +1,7 @@
 FROM nginx:alpine
 
+RUN apk update && apk upgrade --no-cache
+
 COPY ./sitio /usr/share/nginx/html
 
 RUN chown -R nginx:nginx /usr/share/nginx/html && \
